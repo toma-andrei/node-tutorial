@@ -1,0 +1,27 @@
+body
+{
+    margin: 40px;
+}
+
+#dog-image{
+    width: 300px;
+}
+      
+.imagine {
+    display: inline;
+    float: left;
+    width: 300px;
+    height: 300px;
+  }
+  #dogMeta {
+    display: inline;
+    float: left;
+  }
+
+  #title {
+    text-align: center;
+  }
+
+  #error-message {
+    color: rgb(182, 63, 63);
+  }

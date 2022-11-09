@@ -1,0 +1,8 @@
+Version control with GIT
+
+types of file:
+    commits = staged files that were bundeled into a commit are identified by a hash ex: 1ab48
+    staged changes = everything that i want to commit is moved here before commit, then bundeled up into a single commit
+    unstaged changes = files commited before and tracked by git
+    *tracked file = file included in a previous commit
+    *untracked files = files that are not tracked by git (all new files created are untracked)
