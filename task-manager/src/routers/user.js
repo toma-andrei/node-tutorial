@@ -5,6 +5,8 @@ const auth = require("../middleware/auth");
 const User = require("../models/user");
 const multer = require("multer");
 const sharp = require("sharp");
+const { sendWelcomeEmail, sendDeleteEmail } = require("../emails/account");
+
 const upload = multer({
   limits: {
     fileSize: 1_000_000,
@@ -22,13 +24,15 @@ router.post("/users", async (req, res) => {
     const user = new User(req.body);
     const token = await user.generateAuthToken();
     await user.save();
-    res.send({
+    sendWelcomeEmail(user.email, user.name);
+    res.status(201).send({
       status: "success",
       message: `Welcome ${req.body.name}`,
       token: token,
+      user: { ...user._doc },
     });
   } catch (err) {
-    res.status(500).send({ status: "error", message: err });
+    res.status(500).send({ status: "error", message: err.toString() });
   }
 });
 
@@ -42,10 +46,10 @@ router.post("/users/login", async (req, res) => {
 
     res.send({
       status: "success",
-      message: user,
+      message: "It works fine",
       token: token,
+      user: { ...user._doc },
     });
-    console.log(token);
   } catch (err) {
     res.status(400).send({ status: "error", message: err.toString() });
   }
@@ -74,7 +78,11 @@ router.post("/users/logoutAll", auth, async (req, res) => {
 });
 
 router.get("/users/me", auth, async (req, res) => {
-  res.send(req.user);
+  try {
+    res.send(req.user);
+  } catch (error) {
+    res.status(401).send({ status: "error", message: error.toString() });
+  }
 });
 
 router.patch("/users/me", auth, async (req, res) => {
@@ -93,7 +101,9 @@ router.patch("/users/me", auth, async (req, res) => {
 
     await req.user.save();
 
-    res.status(200).send({ status: "success", message: req.user });
+    res
+      .status(200)
+      .send({ status: "success", message: req.user, user: { ...req.user } });
   } catch (err) {
     res.status(400).send({ status: "error", message: err.toString() });
   }
@@ -109,10 +119,10 @@ router.delete("/users/me", auth, async (req, res) => {
     }
 
     await req.user.remove();
-
-    res.send({ status: "success", message: "User deleted" });
+    sendDeleteEmail(user.email, user.name);
+    res.send({ status: "success", message: "User deleted", user: { ...user } });
   } catch (err) {
-    res.status(500).send({ status: "error", message: err });
+    res.status(500).send({ status: "error", message: err.toString() });
   }
 });
 

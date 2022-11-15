@@ -1,20 +1,8 @@
-const express = require("express");
-require("./db/mongoose");
-const userRouter = require("./routers/user");
-const taskRouter = require("./routers/task");
-const app = express();
-const jwt = require("jsonwebtoken");
-const Task = require("./models/task");
-const User = require("./models/user");
+require("dotenv").config();
+const app = require("./app");
 
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
-app.use(userRouter);
-app.use(taskRouter);
-
-app.listen(PORT, () => {
-  console.log(`App is running on port ${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`App is running on port ${process.env.PORT}`);
 });
 
 // const multer = require("multer");

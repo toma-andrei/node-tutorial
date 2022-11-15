@@ -11,7 +11,9 @@ router.post("/tasks", auth, async (req, res) => {
 
   try {
     await task.save();
-    res.status(201).send({ status: "success", message: "Task saved!" });
+    res
+      .status(201)
+      .send({ status: "success", message: "Task saved!", ...task._doc });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -47,6 +49,7 @@ router.get("/tasks", auth, async (req, res) => {
     if (!tasks) return res.status(404);
 
     res.send(tasks);
+    console.log(tasks);
   } catch (err) {
     res.status(500).send({ status: "error", message: err.toString() });
   }
